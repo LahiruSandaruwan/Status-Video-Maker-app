@@ -11,6 +11,7 @@ import 'providers/template_provider.dart';
 import 'providers/user_project_provider.dart';
 import 'providers/video_editor_provider.dart';
 import 'providers/music_provider.dart';
+import 'providers/ad_provider.dart';
 import 'screens/main_navigation.dart';
 import 'models/user_project.dart';
 
@@ -57,6 +58,7 @@ class StatusProApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => UserProjectProvider()),
         ChangeNotifierProvider(create: (_) => VideoEditorProvider()),
         ChangeNotifierProvider(create: (_) => MusicProvider()),
+        ChangeNotifierProvider(create: (_) => AdProvider()),
       ],
       child: MaterialApp(
         title: AppConstants.appName,

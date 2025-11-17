@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import '../models/video_template.dart';
 import '../constants/app_colors.dart';
 import '../providers/video_editor_provider.dart';
-import '../screens/editor/video_editor_screen.dart';
+import '../screens/editor/video_editor_screen_updated.dart';
 
 /// Template card widget for grid display
 class TemplateCard extends StatelessWidget {
@@ -23,7 +23,7 @@ class TemplateCard extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => const VideoEditorScreen(),
+            builder: (context) => const VideoEditorScreenUpdated(),
           ),
         );
       },

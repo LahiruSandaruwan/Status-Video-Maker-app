@@ -4,7 +4,7 @@ import '../constants/app_constants.dart';
 import '../constants/app_theme.dart';
 import 'home/home_screen.dart';
 import 'create/create_screen.dart';
-import 'my_videos/my_videos_screen.dart';
+import 'my_videos/my_videos_screen_updated.dart';
 import 'profile/profile_screen.dart';
 
 /// Main navigation with bottom navigation bar
@@ -23,7 +23,7 @@ class _MainNavigationState extends State<MainNavigation> {
   final List<Widget> _screens = const [
     HomeScreen(),
     CreateScreen(),
-    MyVideosScreen(),
+    MyVideosScreenUpdated(),
     ProfileScreen(),
   ];
 

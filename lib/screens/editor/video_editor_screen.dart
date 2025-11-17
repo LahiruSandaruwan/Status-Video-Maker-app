@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../constants/app_colors.dart';
 import '../../providers/video_editor_provider.dart';
+import '../../providers/ad_provider.dart';
 import '../../widgets/gradient_button.dart';
 
 /// Video editor screen
@@ -449,14 +450,21 @@ class _VideoEditorScreenState extends State<VideoEditorScreen>
       provider.updateGenerationProgress(0.9, 'Finalizing video...');
     });
 
-    Future.delayed(const Duration(seconds: 4), () {
+    Future.delayed(const Duration(seconds: 4), () async {
       provider.completeGeneration();
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Video generation coming soon!'),
-          backgroundColor: AppColors.success,
-        ),
-      );
+
+      // Increment video generation count and show ad if needed
+      final adProvider = context.read<AdProvider>();
+      await adProvider.incrementVideoGenerationCount();
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Video generation coming soon!'),
+            backgroundColor: AppColors.success,
+          ),
+        );
+      }
     });
   }
 
@@ -474,15 +482,32 @@ class _VideoEditorScreenState extends State<VideoEditorScreen>
             child: const Text('Cancel'),
           ),
           ElevatedButton(
-            onPressed: () {
-              // TODO: Show rewarded ad
-              provider.removeWatermark();
+            onPressed: () async {
               Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Watermark removed! (Ad not yet implemented)'),
-                ),
-              );
+
+              // Show rewarded ad
+              final adProvider = context.read<AdProvider>();
+              final rewardEarned = await adProvider.showRewardedAd();
+
+              if (rewardEarned) {
+                provider.removeWatermark();
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Watermark removed!'),
+                      backgroundColor: AppColors.success,
+                    ),
+                  );
+                }
+              } else {
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Ad not ready. Please try again in a moment.'),
+                    ),
+                  );
+                }
+              }
             },
             child: const Text('Watch Ad'),
           ),

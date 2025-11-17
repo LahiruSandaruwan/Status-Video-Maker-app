@@ -7,6 +7,7 @@ import '../../constants/app_colors.dart';
 import '../../providers/video_editor_provider.dart';
 import '../../providers/music_provider.dart';
 import '../../providers/user_project_provider.dart';
+import '../../providers/ad_provider.dart';
 import '../../widgets/gradient_button.dart';
 import '../../services/video_generator_service.dart';
 import '../../services/permission_service.dart';
@@ -679,6 +680,10 @@ class _VideoEditorScreenUpdatedState extends State<VideoEditorScreenUpdated>
       if (mounted) {
         await context.read<UserProjectProvider>().addProject(project);
 
+        // Increment video generation count and show ad if needed
+        final adProvider = context.read<AdProvider>();
+        await adProvider.incrementVideoGenerationCount();
+
         // Show success dialog
         _showSuccessDialog(outputPath);
       }
@@ -800,16 +805,32 @@ class _VideoEditorScreenUpdatedState extends State<VideoEditorScreenUpdated>
             child: const Text('Cancel'),
           ),
           ElevatedButton(
-            onPressed: () {
-              // TODO: Show rewarded ad
-              provider.removeWatermark();
+            onPressed: () async {
               Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Watermark removed!'),
-                  backgroundColor: AppColors.success,
-                ),
-              );
+
+              // Show rewarded ad
+              final adProvider = context.read<AdProvider>();
+              final rewardEarned = await adProvider.showRewardedAd();
+
+              if (rewardEarned) {
+                provider.removeWatermark();
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Watermark removed!'),
+                      backgroundColor: AppColors.success,
+                    ),
+                  );
+                }
+              } else {
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Ad not ready. Please try again in a moment.'),
+                    ),
+                  );
+                }
+              }
             },
             child: const Text('Watch Ad'),
           ),

@@ -6,9 +6,11 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 import 'constants/app_theme.dart';
 import 'constants/app_constants.dart';
+import 'constants/app_colors.dart';
 import 'providers/template_provider.dart';
 import 'providers/user_project_provider.dart';
 import 'providers/video_editor_provider.dart';
+import 'providers/music_provider.dart';
 import 'screens/main_navigation.dart';
 import 'models/user_project.dart';
 
@@ -54,6 +56,7 @@ class StatusProApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => TemplateProvider()),
         ChangeNotifierProvider(create: (_) => UserProjectProvider()),
         ChangeNotifierProvider(create: (_) => VideoEditorProvider()),
+        ChangeNotifierProvider(create: (_) => MusicProvider()),
       ],
       child: MaterialApp(
         title: AppConstants.appName,

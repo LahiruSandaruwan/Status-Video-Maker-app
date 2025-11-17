@@ -1,0 +1,9 @@
+# Build configuration for code generation
+targets:
+  $default:
+    builders:
+      hive_generator|hive:
+        enabled: true
+        options:
+          # Uncomment to enable Hive code generation
+          # Run: flutter packages pub run build_runner build
